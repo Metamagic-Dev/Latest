@@ -10,7 +10,7 @@ import Foundation
 import os
 
 /// Code signing requirement for the main app: only Latest may connect to this daemon.
-private let appCodeSigningRequirement = "identifier \"com.max-langer.Latest\" and certificate leaf[subject.OU] = \"VFABJ5RE5Q\""
+private let appCodeSigningRequirement = "identifier \"com.max-langer.Latest\" and certificate leaf[subject.OU] = \"5M79Y67YF3\""
 
 class ServiceDelegate: NSObject, NSXPCListenerDelegate {
 	/// This method is where the NSXPCListener configures, accepts, and resumes a new incoming NSXPCConnection.
