@@ -30,11 +30,11 @@ class AppDirectory {
 	private var collectionQueue = DispatchQueue(label: "DataStoreQueue")
 
 	
-	/// The file system listener
-	private lazy var listener : DispatchSourceFileSystemObject = {
+	/// The file system listener. Nil if the folder cannot be opened, its contents are then only collected once.
+	private lazy var listener : DispatchSourceFileSystemObject? = {
 		let descriptor = open((self.url as NSURL).fileSystemRepresentation, O_EVTONLY)
-		guard descriptor != -1 else { fatalError("Unable to open folder at url") }
-		
+		guard descriptor != -1 else { return nil }
+
 		let source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor,
 															   eventMask: .write)
 		
@@ -52,12 +52,12 @@ class AppDirectory {
 	}
 	
 	deinit {
-		listener.cancel()
+		listener?.cancel()
 	}
 	
 	/// Resumes tracking if it is not already running
 	private func resumeTracking() {
-		listener.activate()
+		listener?.activate()
 		collectBundles()
 	}
 	

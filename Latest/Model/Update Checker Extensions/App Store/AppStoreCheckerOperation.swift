@@ -203,8 +203,7 @@ extension AppStoreUpdateCheckerOperation {
 			return nil
 		}
 
-		let components = Locale.components(fromIdentifier: preferredLanguage)
-		switch components[NSLocale.Key.languageCode.rawValue]?.lowercased() {
+		switch Locale.Components(identifier: preferredLanguage).languageComponents.languageCode?.identifier.lowercased() {
 		case "en":
 			return "en_us"
 		case "ja":
