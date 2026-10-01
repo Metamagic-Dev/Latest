@@ -170,7 +170,10 @@ extension AppStoreUpdateOperation: CKDownloadQueueObserver {
 			}
 			
 			self.progressState = .installing
-			
+
+			// Remove the snapshot and its temporary directory, whether or not the installation succeeds
+			defer { try? FileManager.default.removeItem(at: installerPackageURL.deletingLastPathComponent()) }
+
 			do {
 				try await InstallHelper.shared.installPackage(at: installerPackageURL, targetURL: bundle.bundlePath, receiptData: receiptData, receiptURL: receiptURL)
 				self.finish()
