@@ -84,10 +84,31 @@ class UpdateTableViewController: NSViewController, NSMenuItemValidation, NSTable
 		
 		if #available(macOS 26, *) {
 			self.topTableConstraint.constant = 0
-			self.tableView.enclosingScrollView?.contentInsets = .init(top: 78, left: 0, bottom: 0, right: 0)
 			self.tableView.enclosingScrollView?.scrollerInsets = .init(top: 0, left: 0, bottom: 10, right: 0)
+			
+			// Align the search field with the row selection and the toolbar's glass group
+			self.view.constraints.filter({ $0.firstItem === self.searchField || $0.secondItem === self.searchField }).forEach { constraint in
+				if [.leading, .trailing].contains(constraint.firstAttribute) {
+					constraint.constant = Self.searchFieldMargin
+				}
+			}
 		}
     }
+	
+	/// The horizontal margin of the search field and its distance to the list below.
+	private static let searchFieldMargin: CGFloat = 10
+	
+	override func viewDidLayout() {
+		super.viewDidLayout()
+		
+		// The list scrolls beneath the search field, start its contents below it
+		guard #available(macOS 26, *), let scrollView = self.tableView.enclosingScrollView else { return }
+		
+		let topInset = self.view.bounds.maxY - self.searchField.frame.minY + Self.searchFieldMargin
+		if scrollView.contentInsets.top != topInset {
+			scrollView.contentInsets.top = topInset
+		}
+	}
     
     override func viewWillAppear() {
         super.viewWillAppear()

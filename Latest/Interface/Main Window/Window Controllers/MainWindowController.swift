@@ -238,10 +238,11 @@ class MainWindowController: NSWindowController, NSMenuItemValidation, NSMenuDele
 	}
 	
 	/// Whether an update check is currently running
-	private var isRunningUpdateCheck: Bool = false {
+	private(set) var isRunningUpdateCheck: Bool = false {
 		didSet {
 			self.reloadTouchBarButton.isEnabled = !isRunningUpdateCheck
 			self.progressIndicator.isHidden = !isRunningUpdateCheck
+			self.updateToolbarItemVisibility()
 		}
 	}
 

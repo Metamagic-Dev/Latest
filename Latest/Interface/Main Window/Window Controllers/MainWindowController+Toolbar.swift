@@ -48,7 +48,27 @@ extension MainWindowController: NSToolbarDelegate {
 			return nil
 		}
 		
+		updateVisibility(of: item)
 		return item
+	}
+	
+	/// Shows the progress indicator in place of the reload button while checking for updates.
+	func updateToolbarItemVisibility() {
+		self.window?.toolbar?.items.forEach(updateVisibility(of:))
+	}
+	
+	private func updateVisibility(of item: NSToolbarItem) {
+		// Hide the item itself, a hidden view would leave an empty slot in the glass group
+		guard #available(macOS 15.0, *) else { return }
+		
+		switch item.itemIdentifier {
+		case .progressIndicatorItem:
+			item.isHidden = !isRunningUpdateCheck
+		case .checkForUpdatesActionItem:
+			item.isHidden = isRunningUpdateCheck
+		default:
+			break
+		}
 	}
 	
 }
