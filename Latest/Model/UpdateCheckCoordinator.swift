@@ -93,6 +93,22 @@ class UpdateCheckCoordinator {
 		self.runUpdateCheck(on: self.library.bundles)
 	}
 	
+	/// Reloads the given app from disk and checks it for updates again.
+	///
+	/// Updates that replace an app's contents in place are not reported by the directory listener, so the app would keep showing its old version.
+	func recheckApp(with identifier: App.Bundle.Identifier) {
+		// Give the updater a moment to finish writing the new bundle
+		DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+			self.library.reloadDirectory(containing: identifier)
+			
+			let bundles = self.library.bundles
+			_ = self.dataStore.set(appBundles: Set(bundles))
+			
+			guard let bundle = bundles.first(where: { $0.identifier == identifier }) else { return }
+			self.runUpdateCheck(on: [bundle])
+		}
+	}
+	
 	/// Performs the update check on the given bundles.
 	private func runUpdateCheck(on bundles: [App.Bundle]) {
 		let repository = UpdateRepository.newRepository()

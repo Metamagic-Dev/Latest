@@ -61,6 +61,11 @@ class AppDirectory {
 		collectBundles()
 	}
 	
+	/// Collects the bundles again, for changes within an app that the listener does not report.
+	func reload() {
+		collectBundles()
+	}
+	
 	/// Triggers an update run
 	private func collectBundles() {
 		bundles = BundleCollector.collectBundles(at: self.url)

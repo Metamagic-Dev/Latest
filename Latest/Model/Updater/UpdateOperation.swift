@@ -86,6 +86,11 @@ class UpdateOperation: StatefulOperation, @unchecked Sendable {
 		}
 		
 		super.finish()
+		
+		// Show the installed version without requiring a manual refresh
+		if self.error == nil && !self.isCancelled {
+			UpdateCheckCoordinator.shared.recheckApp(with: self.appIdentifier)
+		}
 	}
 	
 }

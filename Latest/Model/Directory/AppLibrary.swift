@@ -98,6 +98,11 @@ class AppLibrary {
 	private func performUpdate() {
 		updateHandler(bundles)
 	}
+	
+	/// Reloads the contents of the directory containing the given app.
+	func reloadDirectory(containing appURL: URL) {
+		directories.values.filter({ appURL.path.hasPrefix($0.url.path) }).forEach({ $0.reload() })
+	}
 
 	
 	
