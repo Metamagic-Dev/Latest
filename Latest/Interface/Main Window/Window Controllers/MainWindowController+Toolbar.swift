@@ -35,7 +35,11 @@ extension MainWindowController: NSToolbarDelegate {
 		
 		switch itemIdentifier {
 		case .progressIndicatorItem:
-			item.view = progressIndicator
+			if #available(macOS 15.0, *) {
+				item.view = reloadActivityView
+			} else {
+				item.view = progressIndicator
+			}
 		case .checkForUpdatesActionItem:
 			item.image = NSImage(systemSymbolName: "arrow.clockwise", accessibilityDescription: nil)
 			item.toolTip = NSLocalizedString("CheckForUpdatesToolbarItemToolTip", comment: "Tool tip of a toolbar button that checks for updates")
@@ -52,7 +56,7 @@ extension MainWindowController: NSToolbarDelegate {
 		return item
 	}
 	
-	/// Shows the progress indicator in place of the reload button while checking for updates.
+	/// Shows a rotating reload symbol in place of the reload button while checking for updates.
 	func updateToolbarItemVisibility() {
 		self.window?.toolbar?.items.forEach(updateVisibility(of:))
 	}
@@ -64,6 +68,11 @@ extension MainWindowController: NSToolbarDelegate {
 		switch item.itemIdentifier {
 		case .progressIndicatorItem:
 			item.isHidden = !isRunningUpdateCheck
+			
+			reloadActivityView.removeAllSymbolEffects(animated: false)
+			if isRunningUpdateCheck {
+				reloadActivityView.addSymbolEffect(.rotate, options: .repeat(.continuous))
+			}
 		case .checkForUpdatesActionItem:
 			item.isHidden = isRunningUpdateCheck
 		default:

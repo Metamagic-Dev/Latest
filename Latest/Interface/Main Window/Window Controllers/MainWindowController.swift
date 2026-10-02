@@ -50,6 +50,21 @@ class MainWindowController: NSWindowController, NSMenuItemValidation, NSMenuDele
 		return progressIndicator
 	}()
     
+	/// The reload symbol shown in the toolbar while checking for updates. It rotates until the check finished.
+	lazy var reloadActivityView: NSImageView = {
+		let imageView = NSImageView()
+		imageView.image = NSImage(systemSymbolName: "arrow.clockwise", accessibilityDescription: NSLocalizedString("CheckForUpdatesToolbarItemToolTip", comment: "Tool tip of a toolbar button that checks for updates"))
+		imageView.symbolConfiguration = .init(pointSize: 17, weight: .medium)
+		imageView.contentTintColor = .labelColor
+		
+		// Match the size of the reload button it replaces, so the toolbar's glass group keeps its width
+		imageView.translatesAutoresizingMaskIntoConstraints = false
+		imageView.widthAnchor.constraint(equalToConstant: 36).isActive = true
+		imageView.heightAnchor.constraint(equalToConstant: 28).isActive = true
+		
+		return imageView
+	}()
+    
     /// The button that triggers an reload/recheck for updates
     @IBOutlet weak var reloadTouchBarButton: NSButton!
     
